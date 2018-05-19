@@ -82,22 +82,21 @@ var ut = {
 	    { event : ut.EVENT_KEYDOWN  , array : ut.events.ev_keyd   , str : "keydown"   },
 	    { event : ut.EVENT_KEYUP    , array : ut.events.ev_keyu   , str : "keyup"     }
 	];
-	
-	window.addEventListener("resize", function(event) {
-	    ut.log("Window resize event called");
-	    for(var i = 0; i < ut.events.ev_resize.length; ++i) {
-		var ev = ut.events.ev_resize[i];
-		ev.func.call(ev.owner, event);
-	    }
-	});
 
-	document.addEventListener("mousedown", function(event) {
-	    ut.log("Mousedown called");
-	    for(var i = 0; i < ut.events.ev_moused.length; ++i) {
-		var ev = ut.events.ev_moused[i];
-		ev.func.call(ev.owner, event);
-	    }
-	});
+	// 'The Poor Mans Macro' //
+	function mac_evcall(LIST, DATA) {
+	    return ''+
+		'for(var i=0; i<ut.events.' + LIST + '.length; ++i) {' +
+		'    var ev = ut.events.' + LIST + '[i];' +
+		'    ev.func.call(ev.owner, ' + DATA + ');' +
+		'}';
+	}
+	
+	window.addEventListener  ("resize"   , new Function('event', mac_evcall('ev_resize', 'event')));
+	document.addEventListener("mousedown", new Function('event', mac_evcall('ev_moused', 'event')));
+	document.addEventListener("mouseup"  , new Function('event', mac_evcall('ev_mouseu', 'event')));
+	document.addEventListener("keydown"  , new Function('event', mac_evcall('ev_keyd'  , 'event')));
+	document.addEventListener("keyup"    , new Function('event', mac_evcall('ev_keyu'  , 'event')));
 	
 	this.eventsInitialized = true;
     },
