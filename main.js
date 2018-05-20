@@ -57,6 +57,9 @@ void main() {  \n\
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     b_index.bind();
     gl.drawElements(gl.TRIANGLES, 3, gl.UNSIGNED_INT, 0);
+
+    var assets = new caf();
+    assets.load("gamedata/assets.caf");
     
     requestAnimationFrame(loop);
 }

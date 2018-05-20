@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root type="cafbuilder">
+ <info major="1" minor="1" revision="0" path="/assets/"/>
+ <lumpitem name="testimage" path="/images/" type="image/png" data="img_test.png" revision="1"/>
+</root>
