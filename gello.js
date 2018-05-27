@@ -30,6 +30,8 @@ class glc {
 	    context : context
 	};
 
+	this.ctx.ortho = mat4.create();
+
 	this.log("Configuring the screen");
 
 	// Set up the screen by doing an initial resize and event hook
@@ -119,6 +121,9 @@ class glc {
 	this.ctx.canvas.height = sz.height;
 	this.ctx.context.viewport(0, 0, sz.width, sz.height);
 
+	mat4.identity(this.ctx.ortho);
+	mat4.ortho(this.ctx.ortho, -sz.width / 2, sz.width / 2, -sz.height / 2, sz.height / 2, 0.0, 100.0);
+
 	this.log("Canvas resized to [" + sz.width + "," + sz.height + "]");
     }
 
@@ -129,9 +134,85 @@ class glc {
 	// Set this as the current WebGL Context
 	gl = this.ctx.context;
     }
+
+    initSprites(program) {
+	var igl = this.ctx.context;
+	
+	this.sprites = {
+	    sprites : [],
+	    program : program,
+	    matf    : igl.getUniformLocation(program.glid, "smat"),
+	    vao     : new glvao(),
+	};
+
+	this.sprites.vao.bind();
+	igl.enableVertexAttribArray(0);
+	this.sprites.verts = new glbuffer(new Float32Array([-1.0, -1.0, 0.0,
+							     1.0, -1.0, 0.0,
+							     1.0,  1.0, 0.0,
+							    -1.0,  1.0, 0.0]),
+					  igl.ARRAY_BUFFER, igl.STATIC_DRAW);
+	this.sprites.indis = new glbuffer(new Uint32Array([0, 1, 2, 2, 3, 0]),
+					  igl.ELEMENT_ARRAY_BUFFER, igl.STATIC_DRAW);
+	this.sprites.verts.bind();
+	igl.vertexAttribPointer(0, 3, igl.FLOAT, false, 0, 0);
+	this.sprites.indis.bind();
+    }
+
+    addSprite(rect, trect) {
+	var spr = new sprite(rect, trect);
+	this.sprites.sprites.push(spr);
+	return spr;
+    }
+
+    drawSprites() {
+	this.sprites.vao.bind();
+	this.sprites.program.use();
+
+	var mout = mat4.create();
+	
+	for(var s = 0; s < this.sprites.sprites.length; ++s) {
+	    var spr = this.sprites.sprites[s];
+	    mat4.mul(mout, this.ctx.ortho, spr.mat,);
+	    this.ctx.context.uniformMatrix4fv(this.sprites.matf, false, mout);
+	    this.ctx.context.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_INT, 0);
+	}
+    }
 };
 
 // Classes //
+
+class sprite {
+    constructor(rect, trect) {
+	this.zindex = 0;
+	this.mat  = mat4.create();
+	this.tmat = mat4.create();
+	this.rect(rect);
+	this.texRect(trect);
+    }
+
+    rect(rect) {
+	this.irect = rect;
+	mat4.identity(this.mat);
+	this.translate(vec3.fromValues(rect.x, rect.y, this.zindex));
+	this.scale(vec3.fromValues(rect.w, rect.h, 1));
+    }
+
+    translate(pos) {
+	mat4.translate(this.mat, this.mat, pos);
+    }
+
+    scale(size) {
+	mat4.scale(this.mat, this.mat, size);
+    }
+
+    texRect(rect) {
+	this.itrect = rect;
+	mat4.identity(this.tmat);
+	mat4.translate(this.tmat, this.tmat, vec3.fromValues(rect.x, rect.y, 0));
+	mat4.scale(this.tmat, this.tmat, vec3.fromValues(rect.w, rect.h, 1));
+    }
+}
 
 class globject {
     constructor() {
