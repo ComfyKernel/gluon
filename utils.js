@@ -44,11 +44,12 @@ class size {
 var ut = {
     // "Enums" //
 
-    EVENT_RESIZED   : 1, // 1
-    EVENT_MOUSEDOWN : 2, // 2
-    EVENT_MOUSEUP   : 4, // 4
-    EVENT_KEYDOWN   : 8, // 8
-    EVENT_KEYUP     : 16, // 16
+    EVENT_RESIZED   : 1,
+    EVENT_MOUSEDOWN : 2,
+    EVENT_MOUSEUP   : 4,
+    EVENT_KEYDOWN   : 8,
+    EVENT_KEYUP     : 16,
+    EVENT_MOUSEMOVE : 32,
 
     // Functions //
     
@@ -72,7 +73,8 @@ var ut = {
 	    ev_moused : new Array(),
 	    ev_mouseu : new Array(),
 	    ev_keyd   : new Array(),
-	    ev_keyu   : new Array()
+	    ev_keyu   : new Array(),
+	    ev_mmove  : new Array()
 	};
 
 	this.events.elist = [
@@ -80,7 +82,8 @@ var ut = {
 	    { event : ut.EVENT_MOUSEDOWN, array : ut.events.ev_moused , str : "mousedown" },
 	    { event : ut.EVENT_MOUSEUP  , array : ut.events.ev_mouseu , str : "mouseup"   },
 	    { event : ut.EVENT_KEYDOWN  , array : ut.events.ev_keyd   , str : "keydown"   },
-	    { event : ut.EVENT_KEYUP    , array : ut.events.ev_keyu   , str : "keyup"     }
+	    { event : ut.EVENT_KEYUP    , array : ut.events.ev_keyu   , str : "keyup"     },
+	    { event : ut.EVENT_MOUSEMOVE, array : ut.events.ev_mmove  , str : "mousemove" }
 	];
 
 	// 'The Poor Mans Macro' //
@@ -97,6 +100,7 @@ var ut = {
 	document.addEventListener("mouseup"  , new Function('event', mac_evcall('ev_mouseu', 'event')));
 	document.addEventListener("keydown"  , new Function('event', mac_evcall('ev_keyd'  , 'event')));
 	document.addEventListener("keyup"    , new Function('event', mac_evcall('ev_keyu'  , 'event')));
+	document.addEventListener("mousemove", new Function('event', mac_evcall('ev_mmove' , 'event')));
 	
 	this.eventsInitialized = true;
     },

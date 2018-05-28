@@ -122,7 +122,7 @@ class glc {
 	this.ctx.context.viewport(0, 0, sz.width, sz.height);
 
 	mat4.identity(this.ctx.ortho);
-	mat4.ortho(this.ctx.ortho, -sz.width / 2, sz.width / 2, -sz.height / 2, sz.height / 2, 0.0, 100.0);
+	mat4.ortho(this.ctx.ortho, -sz.width / 2, sz.width / 2, -sz.height / 2, sz.height / 2, -10.0, 100.0);
 
 	this.log("Canvas resized to [" + sz.width + "," + sz.height + "]");
     }
@@ -147,10 +147,10 @@ class glc {
 
 	this.sprites.vao.bind();
 	igl.enableVertexAttribArray(0);
-	this.sprites.verts = new glbuffer(new Float32Array([-1.0, -1.0, 0.0,
-							     1.0, -1.0, 0.0,
-							     1.0,  1.0, 0.0,
-							    -1.0,  1.0, 0.0]),
+	this.sprites.verts = new glbuffer(new Float32Array([-0.5, -0.5, 0.0,
+							     0.5, -0.5, 0.0,
+							     0.5,  0.5, 0.0,
+							    -0.5,  0.5, 0.0]),
 					  igl.ARRAY_BUFFER, igl.STATIC_DRAW);
 	this.sprites.indis = new glbuffer(new Uint32Array([0, 1, 2, 2, 3, 0]),
 					  igl.ELEMENT_ARRAY_BUFFER, igl.STATIC_DRAW);
